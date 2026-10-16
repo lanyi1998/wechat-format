@@ -85,7 +85,7 @@
 
 ![](https://res.wx.qq.com/mpres/zh_CN/htmledition/pages/login/loginpage/images/bg_banner4273fb.png)
 
-代码块，使用微信官方的高亮配色，在代码块标示语言即可。粘贴到公众号后，需要用鼠标点一下代码块，完成高亮。
+代码块会保留行号和换行，粘贴到公众号后可以直接查看。
 
 
     ```cpp

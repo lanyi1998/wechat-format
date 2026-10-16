@@ -56,6 +56,17 @@ var WxRenderer = function (opts) {
     return footnoteindex
   }
 
+  var escapeHtml = function (text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  }
+
+  var renderCodeLine = function (line, index) {
+    return '<div style="display:flex;text-align:left;line-height:1.5">'
+      + '<span style="flex:none;width:2em;text-align:right;color:#aaa;margin-right:1em">' + (index + 1) + '</span>'
+      + '<code style="display:block;flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left">'
+      + (escapeHtml(line) || '&nbsp;') + '</code></div>'
+  }
+
   this.buildFootnotes = function () {
     var footnoteArray = footnotes.map(function (x) {
       if (x[1] === x[2]) {
@@ -95,24 +106,12 @@ var WxRenderer = function (opts) {
     renderer.blockquote = function (text) {
       return '<blockquote ' + S('blockquote') + '>' + text + '</blockquote>'
     }
-    renderer.code = function (text, infostring) {
-      text = text.replace(/</g, "&lt;")
-      text = text.replace(/>/g, "&gt;")
-  
-      var lines = text.split('\n')
-      var codeLines = []
-      var numbers = []
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i]
-        codeLines.push('<code><span class="code-snippet_outer">' + (line || '<br>') + '</span></code>')
-        numbers.push('<li></li>')
-      }
-      var lang = infostring || ''
-      return '<section class="code-snippet__fix code-snippet__js">'
-        + '<ul class="code-snippet__line-index code-snippet__js">' + numbers.join('')+'</ul>'
-        + '<pre class="code-snippet__js" data-lang="'+lang+'">' 
-          + codeLines.join('')
-        + '</pre></section>'
+    renderer.code = function (text) {
+      var lines = text.replace(/\n$/, '').split('\n')
+      return '<section style="display:block;height:auto;margin:20px 0;padding:10px;'
+        + 'font-family:' + FONT_FAMILY_MONO + ';font-size:14px;color:#333;'
+        + 'background:#f7f7f7;border:1px solid #ececec;border-radius:2px;text-align:left">'
+        + lines.map(renderCodeLine).join('') + '</section>'
     }
     renderer.codespan = function (text, infostring) {
       return '<code ' + S('codespan') + '>' + text + '</code>'
